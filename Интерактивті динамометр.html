@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="kk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Интерактивті динамометр</title>
+<style>
+:root{--bg:#fbf1dc;--ink:#3b2a1a;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;font-family:"Trebuchet MS",Verdana,sans-serif;color:var(--ink);text-align:center;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Cg fill='none' stroke='%23b4532a' stroke-width='3' opacity='.14'%3E%3Cpath d='M35 8c-14 0-20 12-13 20s18 4 16-5-12-7-11 0'/%3E%3Cpath d='M35 62c14 0 20-12 13-20s-18-4-16 5 12 7 11 0'/%3E%3C/g%3E%3C/svg%3E")}
+.band{height:14px;background:repeating-linear-gradient(90deg,#b4532a 0 14px,#d9a521 14px 28px,#2e9e5e 28px 42px)}
+h1{font-size:clamp(18px,4.5vw,26px);margin:8px 10px 2px;color:#8f2a18}
+p{margin:0 12px 6px;font-size:14px}
+.row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:8px 10px 14px}
+.b3d{--c:#d9482b;--d:#8f2a18;border:0;border-radius:16px;padding:10px 18px;min-height:48px;font:700 16px "Trebuchet MS",Verdana,sans-serif;color:#fff;cursor:pointer;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),var(--c);box-shadow:0 6px 0 var(--d),0 12px 16px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6);text-shadow:0 1px 2px rgba(0,0,0,.4);transition:transform .08s,box-shadow .08s}
+.b3d:active{transform:translateY(5px);box-shadow:0 1px 0 var(--d),0 3px 6px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6)}
+#s{width:100%;max-width:520px;max-height:78vh;touch-action:none;user-select:none;-webkit-user-select:none}
+.wd{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);max-width:86vw;padding:18px 26px;border:4px solid #d9a521;border-radius:24px;background:rgba(255,250,240,.93);color:#8f2a18;font-weight:700;font-size:clamp(24px,6.5vw,44px);line-height:1.3;pointer-events:none;opacity:0;z-index:5}
+.wd.go{animation:pop 3.6s ease-in-out forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6);box-shadow:0 0 0 rgba(255,200,40,0)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 50px rgba(255,200,40,.95)}28%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1;box-shadow:0 0 36px rgba(255,200,40,.7)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15);box-shadow:0 0 0 rgba(255,200,40,0)}}
+@media (prefers-reduced-motion:reduce){.wd.go{animation:none;opacity:1}}
+</style></head><body>
+<div class="band"></div>
+<h1>Жүктерді динамометрге іл</h1>
+<p>Жүкті динамометрдің ілмегіне сүйреп апар немесе жүкті бас.</p>
+<div class="row"><button class="b3d" style="--c:#2e9e5e;--d:#1b6a3d" onclick="rm()">Соңғы жүкті алып тастау</button><button class="b3d" style="--c:#8a4bb8;--d:#5a2c80" onclick="rst()">Бастапқы күйге келтіру</button></div>
+<svg id="s" viewBox="0 0 400 760" role="img" aria-label="Динамометр және 7 жүк">
+<defs>
+<linearGradient id="mt" x1="0" x2="1"><stop offset="0" stop-color="#8a96a3"/><stop offset=".35" stop-color="#f1f4f7"/><stop offset=".7" stop-color="#b7c0ca"/><stop offset="1" stop-color="#6f7b88"/></linearGradient>
+<linearGradient id="gl" x1="0" x2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".85"/><stop offset="1" stop-color="#dff0f7" stop-opacity=".7"/></linearGradient>
+</defs>
+<rect x="20" y="55" width="220" height="2" fill="none"/>
+<ellipse cx="130" cy="30" rx="16" ry="14" fill="none" stroke="#666" stroke-width="5"/>
+<rect x="92" y="40" width="96" height="294" rx="16" fill="url(#mt)" stroke="#59646f" stroke-width="3"/>
+<rect x="106" y="58" width="76" height="268" rx="8" fill="url(#gl)" stroke="#59646f" stroke-width="2"/>
+<g id="tk"></g>
+<path id="sp" fill="none" stroke="#444" stroke-width="3" stroke-linejoin="round"/>
+<g id="pt"><rect x="108" y="-2" width="70" height="4" rx="2" fill="#d32f2f"/><polygon points="178,-6 188,0 178,6" fill="#d32f2f"/></g>
+<text x="130" y="354" font-size="0"></text>
+<rect id="rd" x="127" y="330" width="6" height="20" fill="#777"/>
+<g id="hk"><circle cx="0" cy="10" r="8" fill="none" stroke="#555" stroke-width="4"/></g>
+<text x="335" y="52" text-anchor="middle" font-size="16" font-weight="700" fill="#8f2a18">Жүктер</text>
+<g id="wg"></g>
+</svg>
+<div class="wd" id="w" aria-live="polite"></div>
+<script>
+var NS='http://www.w3.org/2000/svg',svg=document.getElementById('s'),$=function(i){return document.getElementById(i)};
+var CL=['#e53935','#fb8c00','#fdd835','#43a047','#00acc1','#8e24aa','#ec407a'];
+var WD=['Білімге деген талпынысың арта берсін!','Өзіңе сен, биік белестерді бағындыр!','Бүгін жаңа жаңалық ашатын күн!','Сенің әрбір жетістігің – үлкен жеңіс!','Күнің қуаныш пен шаттыққа толы болсын!','Бір-бірімізге қолдау көрсетіп, бірге жетістікке жетейік!','Бүгінгі сабақ қызықты әрі нәтижелі болсын!'];
+var ws=[],order=[],shown=[],n=0,nv=0,drag=null,wt=null;
+function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+var tk=$('tk');for(var k=0;k<=10;k++){var y=102+k*18;el('line',{x1:152,x2:k%2?160:168,y1:y,y2:y,stroke:'#333','stroke-width':k%2?1:2},tk);if(k%2==0){var t=el('text',{x:170,y:y+3,'font-size':9,fill:'#333'},tk);t.textContent=k}}
+function tray(i){return [335,95+i*88]}
+for(var i=0;i<7;i++){(function(i){var g=el('g',{style:'cursor:grab'},$('wg'));el('circle',{cx:0,cy:-21,r:6,fill:'none',stroke:'#555','stroke-width':3},g);el('rect',{x:-25,y:-17,width:50,height:34,rx:8,fill:CL[i],stroke:'#333','stroke-opacity':.45,'stroke-width':2},g);el('rect',{x:-21,y:-14,width:42,height:11,rx:5,fill:'#fff',opacity:.38},g);var t=el('text',{x:0,y:7,'text-anchor':'middle','font-size':19,'font-weight':700,fill:'#fff',stroke:'rgba(0,0,0,.5)','stroke-width':3,'paint-order':'stroke'},g);t.textContent=i+1;var p=tray(i),w={g:g,x:p[0],y:p[1],st:'tray'};ws.push(w);
+g.addEventListener('pointerdown',function(e){if(w.st!='tray')return;e.preventDefault();w.st='drag';var q=sp(e);drag={i:i,sx:q.x,sy:q.y,mv:false};g.setPointerCapture(e.pointerId);$('wg').appendChild(g)});
+g.addEventListener('pointermove',function(e){if(!drag||drag.i!=i)return;var q=sp(e);w.x=q.x;w.y=q.y;if(Math.abs(q.x-drag.sx)+Math.abs(q.y-drag.sy)>8)drag.mv=true});
+g.addEventListener('pointerup',function(e){if(!drag||drag.i!=i)return;var near=w.y>300&&Math.abs(w.x-130)<100,tap=!drag.mv;drag=null;if(near||tap)hang(i);else w.st='tray'});
+g.addEventListener('pointercancel',function(){if(drag&&drag.i==i){drag=null;w.st='tray'}})})(i)}
+function sp(e){var p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
+function hang(i){ws[i].st='hung';order.push(i);word(i)}
+function rm(){if(order.length)ws[order.pop()].st='tray'}
+function rst(){for(var i=0;i<7;i++)ws[i].st='tray';order=[];shown=[];$('w').className='wd';clearTimeout(wt)}
+function word(i){if(shown[i])return;shown[i]=true;var w=$('w');w.className='wd';void w.offsetWidth;w.textContent=WD[i];w.className='wd go'}
+function fr(){requestAnimationFrame(fr);nv+=(order.length-n)*.12;nv*=.78;n+=nv;if(n<0)n=0;
+var ye=102+n*180/7,hy=352+n*14,d='M130 62L130 72',i;for(i=1;i<=14;i++)d+=' L'+(130+(i%2?15:-15))+' '+(72+(ye-82)*i/14);d+=' L130 '+(ye-10)+' L130 '+ye;
+$('sp').setAttribute('d',d);$('pt').setAttribute('transform','translate(0,'+ye+')');$('rd').setAttribute('height',Math.max(hy-330,1));$('hk').setAttribute('transform','translate(130,'+hy+')');
+for(i=0;i<7;i++){var w=ws[i];if(w.st=='hung'){var j=order.indexOf(i),tx=130,ty=hy+40+j*40;w.x+=(tx-w.x)*.25;w.y+=(ty-w.y)*.25}else if(w.st=='tray'){var p=tray(i);w.x+=(p[0]-w.x)*.25;w.y+=(p[1]-w.y)*.25}
+w.g.setAttribute('transform','translate('+w.x+','+w.y+')'+(w.st=='drag'?' scale(1.1)':''))}}
+fr();
+</script></body></html>
